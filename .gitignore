@@ -1,0 +1,9 @@
+*.dat
+*.yaml
+*.ipynb
+__pycache__
+.vscode
+.ipynb_checkpoints
+*.o
+*.so
+*.mod
