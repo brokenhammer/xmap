@@ -7,7 +7,7 @@ SUBDIRS = fortran
 subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) -C $@ exit "$$?"
+	$(MAKE) -C $@
 
 clean:
 	$(MAKE) -C $(SUBDIRS) $@

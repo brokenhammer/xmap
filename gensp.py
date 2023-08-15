@@ -101,9 +101,9 @@ def fortran_write(map_data, output):
         spdpsi, torpsi, 0, lsp)
 
     # write toroidal psi for profile.dat
-    with open("torpsispickle", "wb") as fb:
-        pickle.dump(map_data["psimesh"], fb)
-        pickle.dump(torpsi, fb)
+#    with open("torpsispickle", "wb") as fb:
+#        pickle.dump(map_data["psimesh"], fb)
+#        pickle.dump(torpsi, fb)
 
     # write to spdata
 

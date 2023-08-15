@@ -40,7 +40,6 @@ subroutine write
     write(iosp,102) lsp, lst-1, 0, 0
     write(iosp,101) psiw, ped
     do i=1,lsp
-        write(iosp,*) "ipsi=",i
         write(iosp,101)bsp(1,i,:) !B-field
         write(iosp,101)bsp(2,i,:)
         write(iosp,101)bsp(3,i,:)
