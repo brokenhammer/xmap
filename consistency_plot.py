@@ -4,18 +4,18 @@
     Author: Xishuo Wei. (xishuow@uci.edu, weixishuo@gmail.com)
     
 """
-
+from utils import FigType
 
 def check_plot(check_data, figs):
     import matplotlib
-    if figs == "save":
+    if figs == FigType.save:
         matplotlib.use("Agg")
     from matplotlib import pyplot as plt
 
     psimesh = check_data["psimesh"]
     smooth_q = check_data["q1d"]
     mean_q2d = check_data["mean_q2d"]
-    var_q2d = check_data["var_q2d"]
+    var_q2d = check_data["var_q2d_mpl"]
 
     fig = plt.figure(figsize=(8, 6))
     plt.plot(psimesh, smooth_q, linewidth=2, color="tab:blue")
@@ -24,7 +24,7 @@ def check_plot(check_data, figs):
     plt.legend(
         [r"$q$", r"$B\cdot{\nabla\zeta}/B\cdot{\nabla\theta}$"], fontsize=20)
     plt.xlabel(r"$\psi_p$")
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("q_check.png")
 
     cpsi = check_data["ri1d"]
@@ -36,7 +36,7 @@ def check_plot(check_data, figs):
                  ecolor="r", capsize=3, errorevery=5)
     plt.legend([r"$\bar{I}$", r"$B\cdot e_\theta$"], fontsize=20)
     plt.xlabel(r"$\psi_p$")
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("I_check.png")
 
     gqi = check_data["gqi"]
@@ -48,7 +48,7 @@ def check_plot(check_data, figs):
                  color="tab:orange", ecolor="r", capsize=3, errorevery=5)
     plt.legend(["(gq+I)", "J*B^2"], fontsize=20)
     plt.xlabel(r"$\psi_p$")
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("J_check.png")
 
     Ronptb = check_data["R2d"]
@@ -70,7 +70,7 @@ def check_plot(check_data, figs):
     for ip in range(0, psi_end, 10):
         plt.plot(Ronptb[ip, :], Zonptb[ip, :], 'k-')
     ax.plot(rbdry, zbdry, 'r--')
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("Boozer.png")
 
     delta = check_data["del2d"]
@@ -80,15 +80,15 @@ def check_plot(check_data, figs):
     ax.set_aspect('equal', 'box')
     ax.pcolormesh(Ronptb, Zonptb, nu_onptb[:-1, :-1])
     ax.set_title(r"$\nu$")
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("nu.png")
 
     fig, ax = plt.subplots(dpi=120)
     ax.set_aspect('equal', 'box')
     ax.pcolormesh(Ronptb, Zonptb, delta[:-1, :-1])
     ax.set_title(r"$\delta$")
-    if figs == "save":
+    if figs == FigType.save:
         plt.savefig("delta.png")
 
-    if figs == "show":
+    if figs == FigType.show:
         plt.show()

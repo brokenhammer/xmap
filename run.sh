@@ -13,7 +13,7 @@ psimax=${psimax:-0.995}
 
 while true
 do
-    read -e -p "Do you want to save the consistency checking figures (y/n/none, default: n, none for no figure)?" savefig
+    read -e -p "Do you want to save the consistency checking figures (y/n/none, default: n. none for no figure)?" savefig
     savefig=${savefig:-n}
     
     if [ ${savefig} = "n" ]

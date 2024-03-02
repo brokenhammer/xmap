@@ -6,13 +6,13 @@
 """
 import numpy as np
 from scipy import interpolate
-from geqdsk import read
 import logging
+from utils import FigType
 
 
-def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
+def mapping_core(data, lsp, lst, psimax_ratio, figs:FigType, nR=200):
     import matplotlib
-    if figs == "save":
+    if figs == FigType.save:
         matplotlib.use("Agg")
     from matplotlib import pyplot as plt
 
@@ -20,8 +20,6 @@ def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
     ntheta = lst - 1  # max(400,lst) - 1
     nR = np.max((nR, npsi, ntheta))    # grids used for inverse interpolation
 
-    logging.info(f"Reading {filename}")
-    data = read(filename)
     R2d = data["r"]
     Z2d = data["z"]
 
@@ -411,7 +409,7 @@ def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
         "delta": delta
     }
 
-    if figs == None:
+    if figs == FigType.none:
         return map_data, None
 
     check_data = {}
@@ -430,9 +428,11 @@ def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
             BZ_ontp[ip, :]*np.cos(t0onptp[ip, :])-BR_ontp[ip, :]*np.sin(t0onptp[ip, :])))
 
     mean_q2d = np.mean(q_2d_onptp, axis=1)
-    var_q2d = np.max(q_2d_onptp, axis=1) - np.min(q_2d_onptp, axis=1)
+    var_q2d = np.array([-np.min(q_2d_onptp,axis=1)+mean_q2d, np.max(q_2d_onptp,axis=1)-mean_q2d])
+    var_q2d_mpl = np.max(q_2d_onptp, axis=1) - np.min(q_2d_onptp, axis=1)
     check_data["mean_q2d"] = mean_q2d
     check_data["var_q2d"] = var_q2d
+    check_data["var_q2d_mpl"] = var_q2d_mpl
     check_data["q1d"] = smooth_q
     check_data["psimesh"] = psimesh
 
@@ -465,7 +465,7 @@ def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
     var_ri2d = [-np.min(ri_2d_onptb, axis=1)+mean_ri2d,
                 np.max(ri_2d_onptb, axis=1)-mean_ri2d]
     check_data["mean_ri2d"] = mean_ri2d
-    check_data["var_ri2d"] = var_ri2d
+    check_data["var_ri2d"] = np.array(var_ri2d)
     check_data["ri1d"] = cpsi
 
     dRdp[:, 0] = dRdp[:, -1]
@@ -479,7 +479,7 @@ def mapping_core(filename, lsp, lst, psimax_ratio, figs, nR=200):
     var_Jacb2 = [(-np.min(Jac_B2, axis=1)+mean_Jacb2)[1:],
                  (np.max(Jac_B2, axis=1)-mean_Jacb2)[1:]]
     check_data["mean_Jacb2"] = mean_Jacb2
-    check_data["var_Jacb2"] = var_Jacb2
+    check_data["var_Jacb2"] = np.array(var_Jacb2)
     check_data["gqi"] = smooth_g*smooth_q+cpsi
     check_data["R2d"] = Ronptb
     check_data["Z2d"] = Zonptb

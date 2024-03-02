@@ -1,4 +1,6 @@
 # Useful utilities when reading files
+from enum import Enum
+import numpy as np
 
 try:
     import re
@@ -46,3 +48,23 @@ def writef(fp, val):
             fp.write("\n");
     if line != 5:
         fp.write("\n");
+
+def np_to_list(data):
+    new_data = {}
+    for key,v in data.items():
+        if isinstance(v, np.ndarray):
+            new_data[key] = v.tolist()
+
+        else:
+            new_data[key] = v
+
+    return new_data
+
+class FigType(Enum):
+    save = 'save'
+    show = 'show'
+    none = 'none'
+    web = 'web'
+
+    def __str__(self):
+        return self.value

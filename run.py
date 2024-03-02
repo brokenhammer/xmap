@@ -10,6 +10,8 @@ from mapping import mapping_core
 import logging
 from gensp import fortran_write
 from consistency_plot import check_plot
+from geqdsk import read
+from utils import FigType
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -25,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--detail-print", help="Set to False if no debug info is wanted. default: False", default=False, type=bool)
     parser.add_argument(
-        "--figs", help="Set to 'show' for popup plots. Set to 'save' to save figures. default: show", default="show")
+        "--figs", type=FigType, choices=list(FigType), help="Set to 'show' for popup plots. Set to 'save' to save figures. default: show", default="show")
     args = parser.parse_args()
 
     if args.ini:
@@ -80,10 +82,13 @@ if __name__ == "__main__":
             output = "./spdata.dat"
     else:
         output = paras.output
-    figs = args.figs if args.figs != "none" else None
+    figs = args.figs if args.figs != "none" else FigType.none
+    print("Reading gfile...")
+    logging.info(f"Reading {filename}")
+    data = read(filename)
     print("Begin mapping...")
-    map_data, check_data = mapping_core(filename, lsp, lst, psimax, figs)
-    if figs:
+    map_data, check_data = mapping_core(data, lsp, lst, psimax, figs)
+    if figs in (FigType.save, FigType.show):
         check_plot(check_data, figs)
     print("Begin writing...")
     fortran_write(map_data, output)
