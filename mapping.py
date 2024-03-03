@@ -11,6 +11,8 @@ from utils import FigType
 
 
 def mapping_core(data, lsp, lst, psimax_ratio, figs:FigType, nR=200):
+    if lst%2 != 0:
+        raise Exception("lst must be an even number!!")
     import matplotlib
     if figs == FigType.save:
         matplotlib.use("Agg")
@@ -22,6 +24,9 @@ def mapping_core(data, lsp, lst, psimax_ratio, figs:FigType, nR=200):
 
     R2d = data["r"]
     Z2d = data["z"]
+
+    if R2d.shape[0]>129 or R2d.shape[1]>129:
+        raise Exception("gfile size too large! Currently supported gfile: 65x65, 129x129.")
 
     psi2d = data["psi"]-data["simagx"]
     R2d_full = data["r"]

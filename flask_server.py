@@ -10,6 +10,7 @@ from utils import np_to_list
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from utils import FigType
+import time
 
 import tempfile
 
@@ -18,16 +19,22 @@ app.config['SECRET_KEY'] = "xsd9jgdyj<>"
 CORS(app,supports_credentials=True,cors_allowed_origins="*",resources={r'/*': {'origins': '*'}})
 socketio = SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
-logging.basicConfig(filename='example.log',level=logging.WARNING)
+xlogger = logging.getLogger('xmap')
+logging.basicConfig(level=logging.WARNING)
+flasklog = logging.getLogger('werkzeug')
+flasklog.setLevel(logging.ERROR)
 
-# data = my_read("g120190.00340")
-# map_data, check_data = convert(data, 91,122,showinfo=True)
-# new_check_data = np_to_list(check_data)
 
 @socketio.on('connect')
 def handle_test():
-    print("Connected!!!")
+    crt = time.localtime()
+    strtime = time.strftime("%Y-%m-%d %H:%M:%S",crt)
+    print(f"[{strtime}] Connected!!!")
     emit('echo')
+
+@socketio.on_error()
+def error_handler(e):
+    emit('flask_error', e)
 
 @socketio.on('gfile')
 def handle_gfile(params):
@@ -39,9 +46,16 @@ def handle_gfile(params):
     file_obj.write(file_str)
     file_obj.flush()
     file_obj.seek(0)
-    gfile_data = read(file_obj)
-    map_data, check_data = mapping_core(gfile_data, lsp, lst, psimax_ratio, figs=FigType.web, nR=200)
-    new_check_data = np_to_list(check_data)
+    try:
+        gfile_data = read(file_obj)
+        map_data, check_data = mapping_core(gfile_data, lsp, lst, psimax_ratio, figs=FigType.web, nR=200)
+        new_check_data = np_to_list(check_data)
+    except Exception as e:
+        crt = time.localtime()
+        strtime = time.strftime("%Y-%m-%d %H:%M:%S",crt)
+        print(f"[{strtime}]",e)
+        emit('flask_error',str(e))
+        return
     emit('visData', new_check_data)
     with tempfile.TemporaryFile(mode="w+") as fp:
         python_write(map_data, fp)
@@ -50,4 +64,4 @@ def handle_gfile(params):
         emit('genSpdata', fp.read())
 
 if __name__ == "__main__":
-    socketio.run(app,debug=False,host="0.0.0.0",port=8989)
+    socketio.run(app,debug=False,host="0.0.0.0",port=5000)

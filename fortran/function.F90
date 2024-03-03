@@ -788,14 +788,14 @@ module spline_function
     ! Check grid point number
     if (mod(nsp, 2) /= 0) then
        write(*,*) 'Periodic Spline Error: Total number of data must be even. nsp=',nsp,' doesn''t work. Use normal spline or request a new input data set.'
-       stop
+       return
     endif
 
     ! check periodicity in raw data
     if (abs(y(1,1)-y(1,nsp)) > SPACING(y(1,1))+SPACING(y(1,nsp)) ) then
        write(*,*) 'Periodic Spline Error: function values at end points must be the same. y(1)=',y(1,1),', y(n)=',y(1,nsp),' doesn''t work. Use normal spline or request a new input data set.'
        write(*,*) 'SPACING(y(1,1)) = ', SPACING(y(1,1)), 'SPACING(y(1,nsp)) = ', SPACING(y(1,nsp))
-       stop
+       return
     endif
     ! reset all the higher order spline coefficients
     y(2:3,:) = 0.0_8
