@@ -6,7 +6,7 @@ read -e -p "Please specify the output spdata file path (default: ./spdata.dat): 
 outputpath=${outputpath:-./spdata.dat}
 read -e -p "Please input npsi (=lsp in GTC and spdata, default: 91):" lsp
 lsp=${lsp:-91}
-read -e -p "Please input ntheta (=lst in GTC, =lst+1 in spdata, default: 122):"
+read -e -p "Please input ntheta (=lst in GTC, =lst+1 in spdata, default: 122):" lst
 lst=${lst:-122}
 read -e -p "Please input the ratio of last mapping surface to the last closed flux surface (default: 0.995): " psimax
 psimax=${psimax:-0.995}
