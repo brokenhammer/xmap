@@ -10,7 +10,7 @@ FTNFLG := -ffree-line-length-0
 all: spdata_interface_f$(EXT_SUFFIX) spline_function_f$(EXT_SUFFIX)
 
 spdata_interface_f$(EXT_SUFFIX): smooth.o spdata_interface.F90
-	f2py -c -m $(F90OPT) spdata_interface_f spdata_interface.F90
+	f2py $(F90OPT) -c -m spdata_interface_f spdata_interface.F90
 
 spline_function_f$(EXT_SUFFIX): smooth.o function.F90
 	f2py $(F90OPT) -c smooth.F90 function.F90 -m spline_function_f

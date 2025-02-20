@@ -29,8 +29,13 @@ flasklog.setLevel(logging.ERROR)
 def handle_test():
     crt = time.localtime()
     strtime = time.strftime("%Y-%m-%d %H:%M:%S",crt)
-    print(f"[{strtime}] Connected!!!")
+    ip = request.headers['X-Real-IP']
+    print(f"[{strtime}] Connected from {ip}!!!")
     emit('echo')
+
+@socketio.on('reportip')
+def print_ipaddr(params):
+    print(f"IP:{params['ip']}")
 
 @socketio.on_error()
 def error_handler(e):
@@ -64,4 +69,4 @@ def handle_gfile(params):
         emit('genSpdata', fp.read())
 
 if __name__ == "__main__":
-    socketio.run(app,debug=False,host="0.0.0.0",port=5000)
+    socketio.run(app,debug=False,host="0.0.0.0",port=8989)
